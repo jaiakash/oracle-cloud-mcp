@@ -219,3 +219,9 @@ touching the architecture, but it stays `false` and registers nothing today.
 
 Reads collapse into three dispatch tools since their schemas are uniform, while
 writes stay explicit because theirs are not.
+
+## Contributing
+
+Contributions are welcome — see [CONTRIBUTING.md](CONTRIBUTING.md). Adding a new
+resource type is usually a single entry in `registry.py` and is a good first
+change; the test suite covers it automatically.
