@@ -108,7 +108,9 @@ def test_global_scope_makes_one_call_without_compartment(monkeypatch, two_compar
 
     def list_regions(**kw):
         calls.append(kw)
-        return SimpleNamespace(data=[SimpleNamespace(display_name="r1", id="x", lifecycle_state=None)])
+        return SimpleNamespace(
+            data=[SimpleNamespace(display_name="r1", id="x", lifecycle_state=None)]
+        )
 
     monkeypatch.setitem(registry.REGISTRY, "thing", _fake_kind(list_regions, scope="global"))
     r = reads.list_resources("thing")

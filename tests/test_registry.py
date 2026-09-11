@@ -18,7 +18,7 @@ KNOWN_SERVICES = {
 
 
 def test_resource_types_mirror_registry_keys():
-    assert RESOURCE_TYPES == tuple(REGISTRY)
+    assert tuple(REGISTRY) == RESOURCE_TYPES
 
 
 @pytest.mark.parametrize("name", RESOURCE_TYPES)

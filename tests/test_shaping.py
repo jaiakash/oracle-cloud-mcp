@@ -25,7 +25,7 @@ def test_missing_attribute_is_none_not_error():
 
 
 def test_datetime_becomes_isoformat():
-    when = dt.datetime(2026, 1, 2, 3, 4, 5, tzinfo=dt.timezone.utc)
+    when = dt.datetime(2026, 1, 2, 3, 4, 5, tzinfo=dt.UTC)
     out = project(_instance(time_created=when), ("created=time_created",))
     assert out["created"] == "2026-01-02T03:04:05+00:00"
 

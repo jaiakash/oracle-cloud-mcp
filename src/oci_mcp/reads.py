@@ -30,7 +30,9 @@ class ReadError(RuntimeError):
     """A read could not be completed; message is safe to show a caller."""
 
 
-def _targets(compartment: str | None, spec: registry.ResourceKind) -> list[compartments.CompartmentRef]:
+def _targets(
+    compartment: str | None, spec: registry.ResourceKind
+) -> list[compartments.CompartmentRef]:
     """Which compartments to query. Empty for non-compartment scopes."""
     if spec.scope != "compartment":
         return []
@@ -186,7 +188,9 @@ def get_resource(resource_type: str, target: str, verbose: bool = True) -> dict[
     return {"resource_type": resource_type, "service": spec.service, "detail": detail}
 
 
-def search(query: str | None = None, free_text: str | None = None, limit: int = 50) -> dict[str, Any]:
+def search(
+    query: str | None = None, free_text: str | None = None, limit: int = 50
+) -> dict[str, Any]:
     if not query and not free_text:
         raise ReadError("Provide either `query` (structured) or `free_text`.")
     if query and free_text:
