@@ -1,0 +1,48 @@
+version: 2
+updates:
+  # Runtime and dev dependencies. The oci SDK ships roughly weekly, so without
+  # this uv.lock ages fast and a later upgrade becomes one large risky jump.
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Minor and patch bumps travel together to keep the noise down. Majors
+      # still arrive as individual PRs so they get real review.
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Keeps the ruff rev in .pre-commit-config.yaml current.
+  #
+  # This ecosystem can only change that rev; it cannot also move the `ruff==`
+  # pin in pyproject.toml, and Dependabot groups do not span ecosystems. So a
+  # bump here alone would leave the hooks and CI enforcing different ruff
+  # versions.
+  #
+  # That is caught rather than merely documented: tests/test_tooling.py asserts
+  # the two pins are equal, so a hook-only bump arrives as a RED pull request
+  # and cannot be merged until the pyproject pin is updated in the same change.
+  # If you are reviewing such a PR, add the matching `ruff==` bump to it.
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(hooks)"
