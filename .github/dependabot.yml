@@ -1,0 +1,39 @@
+version: 2
+updates:
+  # Runtime and dev dependencies. The oci SDK ships roughly weekly, so without
+  # this uv.lock ages fast and a later upgrade becomes one large risky jump.
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "chore(deps)"
+    groups:
+      # Minor and patch bumps travel together to keep the noise down. Majors
+      # still arrive as individual PRs so they get real review.
+      minor-and-patch:
+        patterns: ["*"]
+        update-types: ["minor", "patch"]
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(ci)"
+    groups:
+      actions:
+        patterns: ["*"]
+
+  # Keeps the ruff rev in .pre-commit-config.yaml current. That rev must stay in
+  # step with the pinned ruff in pyproject.toml, so review these two together.
+  - package-ecosystem: "pre-commit"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    commit-message:
+      prefix: "chore(hooks)"
