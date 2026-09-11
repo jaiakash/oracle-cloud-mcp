@@ -6,8 +6,9 @@ Identity, Compute, Block Volume, Networking (VCN), Object Storage and OKE.
 Runs locally over **stdio** and reads credentials straight from `~/.oci/config`,
 so they never leave your machine.
 
-> **Status: Phase 0.** Scaffold plus `oci_whoami`. Read, write and delete tool
-> phases are still to come — see [Roadmap](#roadmap).
+> **Status: Phase 1.** Read-only — orientation, list, get and search across
+> 39 resource types. Write and delete phases are still to come — see
+> [Roadmap](#roadmap).
 
 ## Requirements
 
@@ -52,8 +53,9 @@ uv run fastmcp list --command "uv run oci-mcp" --output-schema
 uv run fastmcp call --command "uv run oci-mcp" --target oci_whoami --json
 ```
 
-Pass tool arguments as `key=value` pairs after `--target`, or use `--input-json`
-for nested values.
+Pass tool arguments with `--input-json '{...}'`. (Bare `key=value` pairs only
+work when you give a server *file* instead of `--command`, which this package
+cannot do — see the note below.)
 
 > Note: point `fastmcp` at the **`--command`**, not at `src/oci_mcp/server.py`.
 > Passing the file loads it as a standalone script rather than a package module,
@@ -128,17 +130,78 @@ Four independent layers, none of which rely on client cooperation:
 | Tool | Notes |
 |---|---|
 | `oci_whoami` | Active tenancy, user, region, auth method, and this server's own permissions |
+| `oci_list` | List one resource type. Omit `compartment` to sweep the tenancy; rows are tagged with where they came from |
+| `oci_get` | Full detail for one resource by OCID (buckets: by name) |
+| `oci_search` | Tenancy-wide Resource Search — structured query or free text |
+
+Reads collapse into three dispatch tools because their schemas are uniform:
+"show me *type* in *compartment*". Writes will stay explicit because theirs are not.
+
+### Resource types
+
+| Service | `resource_type` values |
+|---|---|
+| compute | `instance` `image` `shape` `vnic_attachment` `volume_attachment` `boot_volume_attachment` |
+| block_storage | `volume` `boot_volume` `volume_backup` `boot_volume_backup` `volume_group` |
+| network | `vcn` `subnet` `security_list` `nsg` `route_table` `internet_gateway` `nat_gateway` `service_gateway` `drg` `dhcp_options` `public_ip` `load_balancer` |
+| oke | `cluster` `node_pool` `virtual_node_pool` |
+| database | `autonomous_database` `db_system` `db_home` `db_node` `mysql_db_system` `nosql_table` |
+| object_storage | `bucket` |
+| identity | `compartment` `user` `group` `policy` `availability_domain` `region` |
+
+Every list is projected to the handful of fields that identify and locate a
+resource; pass `verbose=true` for the full object. An OCI `Instance` has 36
+fields, so this is the difference between a usable answer and a blown context.
+
+Things worth knowing:
+
+- **OKE clusters are not indexed by Resource Search.** `oci_search` will never
+  return one; use `oci_list('cluster')`.
+- **Buckets are addressed by name**, not OCID: `oci_get('bucket', 'my-bucket')`.
+- `boot_volume_attachment` is availability-domain scoped; the server fans out
+  across ADs for you.
+- Nothing in the `database` group has been exercised against real resources —
+  this tenancy has none — but every call is verified to return an empty list
+  rather than an error.
+
+### Examples
+
+```bash
+C="uv run oci-mcp"
+
+# every running instance in the tenancy
+uv run fastmcp call --command "$C" --target oci_list \
+  --input-json '{"resource_type":"instance","lifecycle_state":"RUNNING"}' --json
+
+# OKE clusters in one compartment
+uv run fastmcp call --command "$C" --target oci_list \
+  --input-json '{"resource_type":"cluster","compartment":"test-deploy-kubeflow"}' --json
+
+# one bucket, by name
+uv run fastmcp call --command "$C" --target oci_get \
+  --input-json '{"resource_type":"bucket","target":"terraform-state-kubeflow"}' --json
+
+# anything, anywhere, by structured query
+uv run fastmcp call --command "$C" --target oci_search \
+  --input-json '{"query":"query all resources where lifecycleState = '"'"'RUNNING'"'"'"}' --json
+```
+
+Arguments must go through `--input-json` here: with `--command` in play, a bare
+`key=value` positional is parsed as a server spec and fails with
+`Cannot use both a server spec and --command`.
 
 ## Roadmap
 
 | Phase | Scope |
 |---|---|
 | 0 ✅ | Scaffold, config, lazy clients, `oci_whoami` |
-| 1 | Read layer — `oci_list`, `oci_get`, `oci_search` over ~20 resource types |
-| 2 | Safety — confirm tokens, allowlist guard, audit log |
-| 3 | Compute + Block Volume lifecycle |
-| 4 | Networking — VCN composite, security rules, `oci_get_network_path` diagnostic |
-| 5 | Object Storage + OKE + work requests |
+| 1 ✅ | Read layer — `oci_list`, `oci_get`, `oci_search` over 39 resource types |
+| 2 | Safety — compartment allowlist guard and audit log, landed before any write exists |
+| 3 | Create and modify — explicit tools for instances, volumes, VCNs/subnets, buckets, OKE node pools |
 
-Target surface is roughly 26 tools: reads collapse into three dispatch tools since
-their schemas are uniform, while writes stay explicit because theirs are not.
+Scope is deliberately **list, create, modify**. Delete/terminate is not planned;
+the `OCI_MCP_ALLOW_DELETE` flag exists so it can be added later without
+touching the architecture, but it stays `false` and registers nothing today.
+
+Reads collapse into three dispatch tools since their schemas are uniform, while
+writes stay explicit because theirs are not.

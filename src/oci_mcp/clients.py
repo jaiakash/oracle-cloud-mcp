@@ -114,6 +114,28 @@ def search() -> oci.resource_search.ResourceSearchClient:
 
 
 @cache
+def database() -> oci.database.DatabaseClient:
+    """Base Database: Autonomous DB, DB Systems, Exadata."""
+    return oci.database.DatabaseClient(**_kwargs())
+
+
+@cache
+def mysql() -> oci.mysql.DbSystemClient:
+    """MySQL HeatWave is a separate service from Base Database."""
+    return oci.mysql.DbSystemClient(**_kwargs())
+
+
+@cache
+def nosql() -> oci.nosql.NosqlClient:
+    return oci.nosql.NosqlClient(**_kwargs())
+
+
+@cache
+def load_balancer() -> oci.load_balancer.LoadBalancerClient:
+    return oci.load_balancer.LoadBalancerClient(**_kwargs())
+
+
+@cache
 def os_namespace() -> str:
     """Object Storage namespace for this tenancy. Cached; never a tool parameter."""
     return objectstorage().get_namespace().data
@@ -129,3 +151,14 @@ def region() -> str:
 
 def auth_method() -> str:
     return "security_token" if auth()[1] is not None else "api_key"
+
+
+@cache
+def availability_domains(compartment_id: str) -> tuple[str, ...]:
+    """AD names for a compartment.
+
+    A few list APIs (notably list_boot_volume_attachments) are AD-scoped rather
+    than compartment-scoped, so callers must fan out across these.
+    """
+    response = identity().list_availability_domains(compartment_id=compartment_id)
+    return tuple(ad.name for ad in response.data)
