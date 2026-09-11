@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+dist/
+build/
+*.egg-info/
+.env
+# uv.lock IS committed: this is an application, not a library,
+# so the lockfile is what makes installs reproducible.
+.DS_Store
+plan.md
