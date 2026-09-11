@@ -34,7 +34,11 @@ uv run fastmcp call --command "uv run oci-mcp" --target oci_list \
 
 <!--
 Usually the fastest way to diagnose a permissions or configuration problem.
-REDACT the tenancy and user OCIDs before pasting.
+
+REDACT EVERY OCID BEFORE PASTING. The output contains your tenancy and user
+OCIDs, and one for each allowlisted compartment under
+permissions.mutable_compartments. The useful parts for diagnosis are the region,
+auth_method, the capability flags and the `notes` array — not the identifiers.
 -->
 
 ```

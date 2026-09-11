@@ -102,9 +102,11 @@ doesn't exist yet, add a small `@cache` factory to `clients.py`.
 **`fields` is the projection.** Each entry is `"key"` or `"key=attribute"`:
 
 ```python
-"shape"                     # same name in output and on the model
-"name=display_name"         # renamed
-"ocpus=shape_config.ocpus"  # dotted path into a nested model
+fields = (
+    "shape",  # same name in the output and on the model
+    "name=display_name",  # renamed
+    "ocpus=shape_config.ocpus",  # dotted path into a nested model
+)
 ```
 
 Dotted paths let you lift one scalar out of a sub-object instead of embedding the
@@ -162,8 +164,10 @@ An empty list is a pass. An exception is not.
 
 - **One logical change per PR.** If you reformat while fixing a bug, put the
   formatting in its own commit.
-- **Tests and lint must pass.** CI runs `pytest` on Python 3.12 and 3.13, plus
-  `ruff check` and `ruff format --check`.
+- **Tests and lint must pass.** CI runs `pytest` on Python 3.12 and 3.13
+  (`.github/workflows/test.yml`), plus `ruff check` and `ruff format --check`
+  (`.github/workflows/lint.yml`). Both run on every pull request, so you do not
+  need a second interpreter locally — push and let the matrix check 3.13.
 - **Say how you verified it.** "Added the type, tests went 206 → 210, listed it
   against my tenancy and got 3 rows" is exactly right.
 - Commit messages: a short imperative summary, then *why* rather than *what* — the
