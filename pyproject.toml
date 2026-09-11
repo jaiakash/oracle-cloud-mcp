@@ -3,6 +3,9 @@ name = "oci-mcp"
 version = "0.1.0"
 description = "MCP server for operating Oracle Cloud Infrastructure"
 readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Akash Jaiswal" }]
 # Upper bound is deliberate: the oci SDK publishes classifiers only through 3.13
 # and pins urllib3/cryptography/pyOpenSSL ranges. 3.14 will not resolve.
 requires-python = ">=3.12,<3.14"
