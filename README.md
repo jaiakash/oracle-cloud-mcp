@@ -40,6 +40,20 @@ behaviour, not a hang. Normally a client launches it; see
 uv run pytest -q
 ```
 
+**Lint and format**, the same checks CI runs:
+
+```bash
+uv run ruff check .
+uv run ruff format --check .
+```
+
+Install the git hooks once and they run automatically on every commit:
+
+```bash
+uv run pre-commit install
+uv run pre-commit run --all-files   # or check everything now
+```
+
 **Inspect the catalog** without writing any client code:
 
 ```bash

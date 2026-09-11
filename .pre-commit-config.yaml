@@ -1,0 +1,26 @@
+# Mirrors .github/workflows/lint.yml so a clean local run means a green CI run.
+#
+# The ruff rev below MUST stay in step with the ruff version uv resolves for the
+# dev group (see uv.lock). If they drift, pre-commit and CI will disagree and
+# people will pass locally then fail on the PR.
+#
+# Install once:  uv run pre-commit install
+repos:
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.7
+    hooks:
+      # Both hooks read [tool.ruff] from pyproject.toml, so there is exactly one
+      # source of truth for the rule set and line length.
+      - id: ruff-check
+        args: [--fix]
+      - id: ruff-format
+
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-toml
+      - id: check-added-large-files
+      - id: check-merge-conflict
