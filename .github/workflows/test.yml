@@ -1,0 +1,42 @@
+name: Test
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# A new push to a PR makes the in-flight run obsolete.
+concurrency:
+  group: test-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The oci SDK publishes classifiers only through 3.13, and pyproject
+        # caps requires-python at <3.14. Keep this matrix in step with that.
+        python-version: ["3.12", "3.13"]
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+          cache-dependency-glob: uv.lock
+
+      - name: Install dependencies
+        # --locked fails if uv.lock is stale rather than silently re-resolving,
+        # so a dependency change must come with its lockfile.
+        run: uv sync --locked --python ${{ matrix.python-version }}
+
+      - name: Run tests
+        # The suite is entirely offline: no OCI credentials, no network.
+        run: uv run --python ${{ matrix.python-version }} pytest -q
