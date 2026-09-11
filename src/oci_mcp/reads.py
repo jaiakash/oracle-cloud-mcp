@@ -68,9 +68,7 @@ def _call(spec: registry.ResourceKind, cid: str | None, limit: int) -> list[Any]
             return []
         collected: list[Any] = []
         for ad in clients.availability_domains(cid):
-            response = list_call_get_up_to_limit(
-                fn, limit, _PAGE, availability_domain=ad, **kwargs
-            )
+            response = list_call_get_up_to_limit(fn, limit, _PAGE, availability_domain=ad, **kwargs)
             collected.extend(response.data or [])
         return collected
 
@@ -122,11 +120,13 @@ def list_resources(
             except ServiceError as exc:
                 # A compartment the caller cannot read must not fail the whole
                 # sweep: report it alongside the results that did come back.
-                errors.append({
-                    "compartment": ref.name,
-                    "status": str(exc.status),
-                    "message": exc.message,
-                })
+                errors.append(
+                    {
+                        "compartment": ref.name,
+                        "status": str(exc.status),
+                        "message": exc.message,
+                    }
+                )
             # Stop sweeping once we know the answer is truncated. Not safe
             # when a state filter is pending: we cannot know the kept count yet.
             if lifecycle_state is None and len(items) > limit:
@@ -178,8 +178,7 @@ def get_resource(resource_type: str, target: str, verbose: bool = True) -> dict[
             hint = (
                 f"No {resource_type} named {target!r} found."
                 if spec.get_by_name
-                else f"No {resource_type} with OCID {target!r} found in region "
-                     f"{clients.region()}."
+                else f"No {resource_type} with OCID {target!r} found in region {clients.region()}."
             )
             raise ReadError(hint) from None
         raise ReadError(f"OCI returned {exc.status}: {exc.message}") from None
@@ -233,5 +232,5 @@ def search(
         "count": len(items),
         "items": items,
         "note": "Resource Search does not index every service; OKE clusters in "
-                "particular never appear here. Use oci_list('cluster') for those.",
+        "particular never appear here. Use oci_list('cluster') for those.",
     }

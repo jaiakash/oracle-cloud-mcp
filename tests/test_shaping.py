@@ -31,9 +31,7 @@ def test_datetime_becomes_isoformat():
 
 
 def test_dotted_path_lifts_one_scalar_from_nested_model():
-    i = _instance(
-        shape_config=oci.core.models.InstanceShapeConfig(ocpus=4.0, memory_in_gbs=32.0)
-    )
+    i = _instance(shape_config=oci.core.models.InstanceShapeConfig(ocpus=4.0, memory_in_gbs=32.0))
     out = project(i, ("ocpus=shape_config.ocpus", "mem=shape_config.memory_in_gbs"))
     assert out == {"ocpus": 4.0, "mem": 32.0}
 

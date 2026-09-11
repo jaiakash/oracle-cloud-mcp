@@ -41,8 +41,7 @@ def _permissions_summary() -> dict[str, Any]:
     s = settings()
     try:
         allowed = [
-            {"name": c.name, "ocid": c.ocid, "is_root": c.is_root}
-            for c in compartments.allowlist()
+            {"name": c.name, "ocid": c.ocid, "is_root": c.is_root} for c in compartments.allowlist()
         ]
         allowlist_error = None
     except compartments.UnknownCompartment as exc:
@@ -118,9 +117,7 @@ def register(mcp: FastMCP) -> None:
             str | None,
             "Filter by state, e.g. RUNNING, AVAILABLE, ACTIVE, TERMINATED.",
         ] = None,
-        verbose: Annotated[
-            bool, "Return every field instead of the compact projection."
-        ] = False,
+        verbose: Annotated[bool, "Return every field instead of the compact projection."] = False,
     ) -> dict[str, Any]:
         """List resources of one type, compactly.
 

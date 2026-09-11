@@ -62,7 +62,9 @@ def test_fanout_tags_rows_with_compartment(fake_type):
     r = reads.list_resources(fake_type)
     assert r["count"] == 3
     assert {(i["name"], i["compartment"]) for i in r["items"]} == {
-        ("a", "lab"), ("b", "lab"), ("c", "prod")
+        ("a", "lab"),
+        ("b", "lab"),
+        ("c", "prod"),
     }
     assert r["scanned_compartments"] == ["lab", "prod"]
 
