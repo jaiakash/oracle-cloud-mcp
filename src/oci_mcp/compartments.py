@@ -45,9 +45,7 @@ def all_compartments() -> tuple[CompartmentRef, ...]:
         access_level="ANY",
         lifecycle_state="ACTIVE",
     )
-    found.extend(
-        CompartmentRef(name=c.name, ocid=c.id) for c in response.data
-    )
+    found.extend(CompartmentRef(name=c.name, ocid=c.id) for c in response.data)
     return tuple(found)
 
 
@@ -65,9 +63,7 @@ def resolve(ref: str) -> CompartmentRef:
     matches = [c for c in candidates if c.name == ref]
     if not matches:
         names = ", ".join(sorted(c.name for c in candidates))
-        raise UnknownCompartment(
-            f"No compartment named {ref!r}. Available: {names}."
-        )
+        raise UnknownCompartment(f"No compartment named {ref!r}. Available: {names}.")
     if len(matches) > 1:
         # Compartment names are unique only within a parent, so a nested tree can
         # legitimately contain duplicates. Force the caller to disambiguate.

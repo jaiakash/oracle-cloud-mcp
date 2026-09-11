@@ -62,7 +62,9 @@ def test_fanout_tags_rows_with_compartment(fake_type):
     r = reads.list_resources(fake_type)
     assert r["count"] == 3
     assert {(i["name"], i["compartment"]) for i in r["items"]} == {
-        ("a", "lab"), ("b", "lab"), ("c", "prod")
+        ("a", "lab"),
+        ("b", "lab"),
+        ("c", "prod"),
     }
     assert r["scanned_compartments"] == ["lab", "prod"]
 
@@ -108,7 +110,9 @@ def test_global_scope_makes_one_call_without_compartment(monkeypatch, two_compar
 
     def list_regions(**kw):
         calls.append(kw)
-        return SimpleNamespace(data=[SimpleNamespace(display_name="r1", id="x", lifecycle_state=None)])
+        return SimpleNamespace(
+            data=[SimpleNamespace(display_name="r1", id="x", lifecycle_state=None)]
+        )
 
     monkeypatch.setitem(registry.REGISTRY, "thing", _fake_kind(list_regions, scope="global"))
     r = reads.list_resources("thing")

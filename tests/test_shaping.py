@@ -25,15 +25,13 @@ def test_missing_attribute_is_none_not_error():
 
 
 def test_datetime_becomes_isoformat():
-    when = dt.datetime(2026, 1, 2, 3, 4, 5, tzinfo=dt.timezone.utc)
+    when = dt.datetime(2026, 1, 2, 3, 4, 5, tzinfo=dt.UTC)
     out = project(_instance(time_created=when), ("created=time_created",))
     assert out["created"] == "2026-01-02T03:04:05+00:00"
 
 
 def test_dotted_path_lifts_one_scalar_from_nested_model():
-    i = _instance(
-        shape_config=oci.core.models.InstanceShapeConfig(ocpus=4.0, memory_in_gbs=32.0)
-    )
+    i = _instance(shape_config=oci.core.models.InstanceShapeConfig(ocpus=4.0, memory_in_gbs=32.0))
     out = project(i, ("ocpus=shape_config.ocpus", "mem=shape_config.memory_in_gbs"))
     assert out == {"ocpus": 4.0, "mem": 32.0}
 

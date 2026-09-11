@@ -23,9 +23,7 @@ def _env_bool(name: str, default: bool) -> bool:
         return True
     if value in _FALSY:
         return False
-    raise ValueError(
-        f"{name}={raw!r} is not a boolean. Use one of: true, false, 1, 0, yes, no."
-    )
+    raise ValueError(f"{name}={raw!r} is not a boolean. Use one of: true, false, 1, 0, yes, no.")
 
 
 def _env_tuple(name: str) -> tuple[str, ...]:
@@ -65,7 +63,5 @@ def settings() -> Settings:
         allow_write=_env_bool("OCI_MCP_ALLOW_WRITE", True),
         allow_delete=_env_bool("OCI_MCP_ALLOW_DELETE", False),
         compartment_refs=_env_tuple("OCI_MCP_COMPARTMENTS"),
-        audit_log=os.path.expanduser(
-            os.environ.get("OCI_MCP_AUDIT_LOG", "~/.oci-mcp/audit.jsonl")
-        ),
+        audit_log=os.path.expanduser(os.environ.get("OCI_MCP_AUDIT_LOG", "~/.oci-mcp/audit.jsonl")),
     )

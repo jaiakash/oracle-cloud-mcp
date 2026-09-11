@@ -13,12 +13,18 @@ import pytest
 from oci_mcp.registry import REGISTRY, RESOURCE_TYPES, ResourceKind, by_service, kind
 
 KNOWN_SERVICES = {
-    "compute", "block_storage", "network", "oke", "database", "object_storage", "identity",
+    "compute",
+    "block_storage",
+    "network",
+    "oke",
+    "database",
+    "object_storage",
+    "identity",
 }
 
 
 def test_resource_types_mirror_registry_keys():
-    assert RESOURCE_TYPES == tuple(REGISTRY)
+    assert tuple(REGISTRY) == RESOURCE_TYPES
 
 
 @pytest.mark.parametrize("name", RESOURCE_TYPES)
@@ -86,6 +92,14 @@ def test_unknown_type_error_lists_valid_types():
 
 def test_phase_one_coverage():
     """The types the user asked for by name must all be present."""
-    for wanted in ("instance", "cluster", "node_pool", "volume", "boot_volume",
-                   "autonomous_database", "db_system", "mysql_db_system"):
+    for wanted in (
+        "instance",
+        "cluster",
+        "node_pool",
+        "volume",
+        "boot_volume",
+        "autonomous_database",
+        "db_system",
+        "mysql_db_system",
+    ):
         assert wanted in REGISTRY
