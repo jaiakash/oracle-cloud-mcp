@@ -28,8 +28,17 @@ updates:
       actions:
         patterns: ["*"]
 
-  # Keeps the ruff rev in .pre-commit-config.yaml current. That rev must stay in
-  # step with the pinned ruff in pyproject.toml, so review these two together.
+  # Keeps the ruff rev in .pre-commit-config.yaml current.
+  #
+  # This ecosystem can only change that rev; it cannot also move the `ruff==`
+  # pin in pyproject.toml, and Dependabot groups do not span ecosystems. So a
+  # bump here alone would leave the hooks and CI enforcing different ruff
+  # versions.
+  #
+  # That is caught rather than merely documented: tests/test_tooling.py asserts
+  # the two pins are equal, so a hook-only bump arrives as a RED pull request
+  # and cannot be merged until the pyproject pin is updated in the same change.
+  # If you are reviewing such a PR, add the matching `ruff==` bump to it.
   - package-ecosystem: "pre-commit"
     directory: "/"
     schedule:
