@@ -3,6 +3,9 @@ name = "oci-mcp"
 version = "0.1.0"
 description = "MCP server for operating Oracle Cloud Infrastructure"
 readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+authors = [{ name = "Akash Jaiswal" }]
 # Upper bound is deliberate: the oci SDK publishes classifiers only through 3.13
 # and pins urllib3/cryptography/pyOpenSSL ranges. 3.14 will not resolve.
 requires-python = ">=3.12,<3.14"
@@ -21,7 +24,11 @@ dev = [
 oci-mcp = "oci_mcp.server:main"
 
 [build-system]
-requires = ["hatchling"]
+# >=1.27 is required for the PEP 639 license metadata above: 1.26 silently
+# degrades it to a legacy free-text `License:` field with no `License-File`,
+# rather than failing, so an unbounded requirement can quietly ship a wheel
+# with worse metadata.
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]

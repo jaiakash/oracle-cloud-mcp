@@ -205,3 +205,7 @@ touching the architecture, but it stays `false` and registers nothing today.
 
 Reads collapse into three dispatch tools since their schemas are uniform, while
 writes stay explicit because theirs are not.
+
+## License
+
+[Apache License 2.0](LICENSE).
