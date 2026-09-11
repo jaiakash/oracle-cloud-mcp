@@ -24,7 +24,11 @@ dev = [
 oci-mcp = "oci_mcp.server:main"
 
 [build-system]
-requires = ["hatchling"]
+# >=1.27 is required for the PEP 639 license metadata above: 1.26 silently
+# degrades it to a legacy free-text `License:` field with no `License-File`,
+# rather than failing, so an unbounded requirement can quietly ship a wheel
+# with worse metadata.
+requires = ["hatchling>=1.27"]
 build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
