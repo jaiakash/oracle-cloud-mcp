@@ -4,6 +4,9 @@ Thanks for your interest. This project is an MCP server that lets an AI agent
 operate Oracle Cloud Infrastructure. Bug reports, new resource types and
 documentation fixes are all welcome.
 
+> Using an AI coding assistant? [AGENTS.md](AGENTS.md) is a condensed version of
+> this document plus the invariants that must not be changed.
+
 ## Prerequisites
 
 - **[uv](https://docs.astral.sh/uv/)** — manages the interpreter and dependencies.
