@@ -16,6 +16,34 @@ copying OCIDs between them.
 It runs locally over stdio and reads credentials straight from `~/.oci/config`, so
 they never leave your machine.
 
+## Demo
+
+Ask in plain language; the agent picks the tool. No compartment was given here, so
+it swept the whole tenancy and tagged every row with where it came from:
+
+![Listing running instances across the tenancy](docs/demo/02-list.png)
+
+<details>
+<summary>Two more: checking which account you are on, and inspecting OKE</summary>
+
+<br>
+
+`oci_whoami` reports the active tenancy **and the server's own permissions** — writes
+are impossible until you name an allowlisted compartment:
+
+![oci_whoami output](docs/demo/01-whoami.png)
+
+OKE clusters are invisible to OCI Resource Search, so `oci_list` is the way to reach
+them. The tool says so in its own output:
+
+![Listing OKE clusters](docs/demo/03-cluster.png)
+
+</details>
+
+> Output above is real, captured from a live tenancy. All identifiers — OCIDs,
+> e-mail, tenancy name, public IPs, and the OCID fragments embedded in OKE node
+> names — were replaced with placeholders before rendering.
+
 > **Status:** read-only today. Create and modify tools are planned — see
 > [open issues](https://github.com/jaiakash/oracle-cloud-mcp/issues).
 
