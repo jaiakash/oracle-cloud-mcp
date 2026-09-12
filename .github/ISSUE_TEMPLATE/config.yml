@@ -1,0 +1,8 @@
+# Discussions is not enabled on this repository, so there is no contact link
+# here: one would 404. If Discussions is turned on later, add:
+#
+# contact_links:
+#   - name: Question or usage help
+#     url: https://github.com/jaiakash/oracle-cloud-mcp/discussions
+#     about: Ask about configuration or usage rather than filing a bug.
+blank_issues_enabled: true

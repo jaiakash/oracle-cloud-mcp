@@ -18,7 +18,10 @@ dependencies = [
 dev = [
     "pytest>=8",
     "pytest-asyncio>=0.24",
-    "ruff>=0.15",
+    # Keep in step with the ruff rev pinned in .pre-commit-config.yaml, so the
+    # hooks and CI enforce identical rules. tests/test_tooling.py asserts this.
+    "ruff==0.16.7",
+    "pre-commit>=4",
 ]
 
 [project.scripts]
