@@ -7,7 +7,7 @@
 # Install once:  uv run pre-commit install
 repos:
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.7
+    rev: v0.16.9
     hooks:
       # Both hooks read [tool.ruff] from pyproject.toml, so there is exactly one
       # source of truth for the rule set and line length.
